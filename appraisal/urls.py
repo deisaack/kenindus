@@ -5,6 +5,9 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     url(r'^make/$', haris.appraisal_creating, name='appraisal_settings'),
+	url(r'^question/(?P<pk>[0-9]+)/$', views.QuestionDetilView.as_view(), name='question_detail'),
+	url(r'^question/$', views.QuestionList.as_view(), name='question_list'),
+
 ]
 
 if settings.DEBUG:

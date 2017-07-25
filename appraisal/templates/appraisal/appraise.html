@@ -50,13 +50,6 @@
                     {{ error|escape }}
                 {% endfor %}
             {% endif %}
-
-            {{ question_form.rank }}
-            {% if question_form.rank.errors %}
-                {% for error in question_form.rank.errors %}
-                    {{ error|escape }}
-                {% endfor %}
-            {% endif %}
         </div>
     {% endfor %}
 
@@ -65,7 +58,7 @@
             {{ error|escape }}
         {% endfor %}
     {% endif %}
-    <input type="submit" value="Update appraisal" class="button"/>
+    <input type="submit" value="Create appraisal" class="button"/>
 </form>
 
 <!-- Include formset plugin - including jQuery dependency -->

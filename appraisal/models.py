@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib import admin
-
+from django.urls import reverse
 User = settings.AUTH_USER_MODEL
 
 
@@ -23,15 +23,22 @@ class Question(models.Model):
 	)
 	rank = models.SmallIntegerField(choices=RANK, null=True, blank=True)
 	active = models.BooleanField(default=False)
+	date = models.DateTimeField(auto_now_add=True)
+	updated = models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.title
+
+	def get_absolute_url(self):
+		return reverse('appraisal:question_detail', kwargs={'pk': self.pk})
+
+
 admin.site.register(Question)
 
 class Appraisal(models.Model):
-	employee = models.ForeignKey('Employee', on_delete=models.CASCADE, related_name='+')
-	superior = models.ForeignKey('Superior', on_delete=models.CASCADE, related_name='+')
-	total = models.PositiveIntegerField()
+	employee = models.ForeignKey('Employee', on_delete=models.PROTECT, related_name='+')
+	superior = models.ForeignKey('Employee', on_delete=models.PROTECT, related_name='+')
+	total = models.PositiveIntegerField(default=0)
 	created = models.DateField(auto_now_add=True, auto_now=False)
 
 	def __str__(self):
@@ -48,24 +55,7 @@ class Employee(models.Model):
 admin.site.register(Employee)
 
 
-class EmployeeReview(models.Model):
-	user = models.ManyToManyField(User)
-	superior = models.ForeignKey('Superior')
-	employee = models.ManyToManyField(Employee)
-	total = models.PositiveIntegerField(default=0)
-	date = models.DateTimeField(auto_now=False, auto_now_add=True)
-
-	def __str__(self):
-		return ('%s %s' % (self.user.username, self.date))
-
-class Superior(models.Model):
-	department = models.OneToOneField(Employee)
-
-admin.site.register(Superior)
-
-
 class Review(models.Model):
-	superior = models.ForeignKey(Superior, null=True, blank=True)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	QUESTION_CHOICES =	(0 , 'N/A'),(1 , 'Strongly Disagree'), (2 , 'Disagree'), (3 , 'Neutral'),(4 , 'Agree'),	(5 , 'Strongly Agree')
 	INSTRUCTION_CHOICES = (0 , 'N/A'),\
@@ -102,19 +92,4 @@ class Review(models.Model):
 	hr_comment = models.TextField(default='')
 	total = models.IntegerField(default='0')
 
-	def __str__(self):
-		return ('%s %s' % (self.user.username, self.date.date()))
-
-admin.site.register(Review)
-
-
-class Category(models.Model):
-	name = models.CharField(max_length=30)
-	user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-class Product(models.Model):
-	name = models.CharField(max_length=30)
-	price = models.DecimalField(decimal_places=2, max_digits=10)
-	category = models.ForeignKey(Category)
-	user = models.ForeignKey(User, on_delete=models.CASCADE)
 

@@ -76,9 +76,6 @@ class BaseQuestionFormSet(BaseFormSet):
                     )
 
 
-
-
-
 @login_required
 def appraisal_creating(request):
     appraisal = Appraisal()
@@ -95,21 +92,22 @@ def appraisal_creating(request):
             # Save user info
             appraisal.superior = appraisal_form.cleaned_data.get('superior')
             appraisal.employee = appraisal_form.cleaned_data.get('employee')
-            appraisal.total = appraisal_form.cleaned_data.get('total')
             appraisal.save()
 
             # Now save the data for each form in the formset
             new_questions = []
-
+            my_total = 5
             for question_form in question_formset:
                 # appraisal = app
                 title = question_form.cleaned_data.get('title')
                 description = question_form.cleaned_data.get('description')
                 rank = question_form.cleaned_data.get('rank')
+                my_total += rank
 
                 if title and description:
                     new_questions.append(Question(appraisal=appraisal, title=title, description=description, rank=rank))
-
+            appraisal.total =my_total
+            appraisal.save()
             try:
                 with transaction.atomic():
                     #Replace the old with the new
