@@ -3,12 +3,16 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import reverse
 User = settings.AUTH_USER_MODEL
+from django.db.models.signals import pre_save
+from django.utils.text import slugify
+from autoslug import AutoSlugField
 
 
 class Question(models.Model):
 	appraisal = models.ForeignKey('Appraisal', on_delete=models.CASCADE, null=True, blank=True, related_name='+')
 	title = models.CharField(max_length=300)
-	description = models.CharField(max_length=300, default='')
+	slug = models.SlugField(null=True, blank=True)
+	description = models.CharField(max_length=3000, default='')
 	ONE = 1
 	TWO = 2
 	THREE = 3
@@ -30,7 +34,7 @@ class Question(models.Model):
 		return self.title
 
 	def get_absolute_url(self):
-		return reverse('appraisal:question_detail', kwargs={'pk': self.pk})
+		return reverse('appraisal:question_detail', kwargs={'slug': self.slug})
 
 
 admin.site.register(Question)
@@ -38,11 +42,19 @@ admin.site.register(Question)
 class Appraisal(models.Model):
 	employee = models.ForeignKey('Employee', on_delete=models.PROTECT, related_name='+')
 	superior = models.ForeignKey('Employee', on_delete=models.PROTECT, related_name='+')
+	slug = models.SlugField(unique=True, null=True, blank=True)
 	total = models.PositiveIntegerField(default=0)
-	created = models.DateField(auto_now_add=True, auto_now=False)
+	date = models.DateField(auto_now_add=True)
+	updated = models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return self.employee.user.username + ' ' + self.employee.user.email
+
+
+	def get_absolute_url(self):
+		return reverse('appraisal:appraisal_detail', kwargs={'slug': self.slug})
+
+
 
 
 class Employee(models.Model):
@@ -92,4 +104,43 @@ class Review(models.Model):
 	hr_comment = models.TextField(default='')
 	total = models.IntegerField(default='0')
 
+def create_appraisal_slug(instance, new_slug=None):
+	slug = slugify(instance.employee_id)
+	if new_slug is not None:
+		slug = new_slug
+	qs = Appraisal.objects.filter(slug=slug).order_by('-id')
+	exists = qs.exists()
+	if exists:
+		from random import randint
+		x = randint(0, 100)
+		slug = '%s-%s-%s' % (slug, qs.first().id, x)
+		return create_appraisal_slug(instance, new_slug=slug)
+	return slug
+
+def pre_save_appraisal_receier(sender, instance, *args, **kwargs):
+	if not instance.slug:
+		instance.slug = create_appraisal_slug(instance)
+
+
+
+pre_save.connect(pre_save_appraisal_receier, sender=Appraisal)
+
+def create_qn_slug(instance, new_slug=None):
+	slug = slugify(instance.title)
+	if new_slug is not None:
+		slug = new_slug
+	qs = Question.objects.filter(slug=slug).order_by('-id')
+	exists = qs.exists()
+	if exists:
+		from random import randint
+		x = randint(0, 100)
+		slug = '%s-%s-%s' % (slug, qs.first().id, x)
+		return create_qn_slug(instance, new_slug=slug)
+	return slug
+
+def pre_save_question_receier(sender, instance, *args, **kwargs):
+	if not instance.slug:
+		instance.slug = create_qn_slug(instance)
+
+pre_save.connect(pre_save_question_receier, sender=Question)
 

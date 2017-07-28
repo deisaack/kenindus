@@ -1,11 +1,6 @@
-{% load staticfiles %}
-
-{% if messages %}
-    {% for message in messages %}
-        <p>{{ message }}</p>
-    {% endfor %}
-{% endif %}
-
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
 <form method="post">
     {% csrf_token %}
 
@@ -24,14 +19,9 @@
             {{ error|escape }}
         {% endfor %}
     {% endif %}
+{#    {{ appraisal_form.as_p }}#}
 
-    <label>Rank</label>
-    {{ appraisal_form.total }}
-    {% if appraisal_form.total.errors %}
-        {% for error in appraisal_form.total.errors %}
-            {{ error|escape }}
-        {% endfor %}
-    {% endif %}
+    <hr>
 
     {{ question_formset.management_form }}
 
@@ -47,6 +37,13 @@
             {{ question_form.description }}
             {% if question_form.description.errors %}
                 {% for error in question_form.description.errors %}
+                    {{ error|escape }}
+                {% endfor %}
+            {% endif %}
+
+            {{ question_form.rank }}
+            {% if question_form.rank.errors %}
+                {% for error in question_form.rank.errors %}
                     {{ error|escape }}
                 {% endfor %}
             {% endif %}
@@ -70,3 +67,4 @@
         deleteText: 'remove'
     });
 </script>
+{% endblock content %}

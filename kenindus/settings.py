@@ -38,7 +38,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'appraisal',
+
+    'django.contrib.sites',
+    'django.contrib.flatpages',
+    'froala_editor',
+    'django_markdown',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -121,8 +129,69 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'live/static')
 
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'live/media/')
+# INSTALLED_APPS += ('froala_editor')
+CKEDITOR_UPLOAD_PATH = "uploads/"
+CKEDITOR_ALLOW_NONIMAGE_FILES = False
+
+
+CKEDITOR_CONFIGS = {
+    'awesome_ckeditor': {
+        'toolbar': 'Basic',
+    },
+    'default': {
+        'toolbar': (
+            ['div', 'Source', '-', 'Save', 'NewPage', 'Preview', '-', 'Templates'],
+            ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Print', 'SpellChecker', 'Scayt'],
+            ['Undo', 'Redo', '-', 'Find', 'Replace', '-', 'SelectAll', 'RemoveFormat'],
+            ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'],
+            ['Bold', 'Italic', 'Underline', 'Strike', '-', 'Subscript', 'Superscript'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'Blockquote'],
+            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink', 'Anchor'],
+            ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak'],
+            ['Styles', 'Format', 'Font', 'FontSize'],
+            ['TextColor', 'BGColor'],
+            ['Maximize', 'ShowBlocks', '-', 'About', 'pbckcode'],
+        ),
+    },
+}
+
+
+# CKEDITOR_UPLOAD_SLUGIFY_FILENAME = False
+# CKEDITOR_JQUERY_URL = 'http://libs.baidu.com/jquery/2.0.3/jquery.min.js'
+# CKEDITOR_IMAGE_BACKEND = "pillow"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

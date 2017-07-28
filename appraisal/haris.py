@@ -23,13 +23,13 @@ class QuestionForm(forms.ModelForm):
 
     class Meta:
         model = Question
-        fields = ['title', 'description', 'rank']
+        fields = ['appraisal', 'title', 'description', 'rank']
 
 
 class AppraisalForm(forms.ModelForm):
     class Meta:
         model = Appraisal
-        fields = ['employee', 'superior', 'total']
+        fields = ['employee', 'superior']
 
 
 class BaseQuestionFormSet(BaseFormSet):
@@ -85,41 +85,56 @@ def appraisal_creating(request):
                     for l in appraisal_questions]
 
     if request.method == 'POST':
-        appraisal_form = AppraisalForm(request.POST) # whenever required
+        appraisal_form = AppraisalForm(request.POST, appraisal) # whenever required
         question_formset = QuestionFormSet(request.POST)
-
-        if appraisal_form.is_valid() and question_formset.is_valid():
-            # Save user info
+        if not appraisal_form.is_valid():
+            messages.error(request, 'There was an error in the appraisal form.')
+            print(appraisal_form.cleaned_data)
+        elif not question_formset.is_valid():
+            messages.error(request, 'There was an error in the question_formset.')
+            print(question_formset.cleaned_data)
+        else:
             appraisal.superior = appraisal_form.cleaned_data.get('superior')
             appraisal.employee = appraisal_form.cleaned_data.get('employee')
-            appraisal.save()
+            try:
+                appraisal.save()
+                messages.success(request, 'The appraisal was successfully saved.')
+            except IntegrityError:
+                messages.error(request, 'There appraisal encountered errors while being saved.')
+                return redirect(reverse('appraisal:appraisal_list'))
+
+            this_appraisal = appraisal
 
             # Now save the data for each form in the formset
             new_questions = []
-            my_total = 5
+            my_total = 0
             for question_form in question_formset:
-                # appraisal = app
+                # = Question()
+                appraisal = this_appraisal
                 title = question_form.cleaned_data.get('title')
                 description = question_form.cleaned_data.get('description')
                 rank = question_form.cleaned_data.get('rank')
-                my_total += rank
+                if appraisal and title and description and rank:
+                    question = Question(appraisal=appraisal, title=title, description=description, rank=rank)
+                    question.save()
+                    my_total += rank
 
-                if title and description:
-                    new_questions.append(Question(appraisal=appraisal, title=title, description=description, rank=rank))
+                # if title and description:
+                #     new_questions.append(Question(appraisal=appraisal, title=title, description=description, rank=rank))
             appraisal.total =my_total
             appraisal.save()
-            try:
-                with transaction.atomic():
-                    #Replace the old with the new
-                    Question.objects.filter(appraisal=appraisal).delete()
-                    Question.objects.bulk_create(new_questions)
-
-                    # And notify our users that it worked
-                    messages.success(request, 'You have updated the appraisal.')
-
-            except IntegrityError: #If the transaction failed
-                messages.error(request, 'There was an error saving your appraisal.')
-                return redirect(reverse('appraisal_settings'))
+            # print(new_questions)
+            # try:
+            #     with transaction.atomic():
+                #Replace the old with the new
+                # Question.objects.bulk_create(new_questions)
+                #
+                # And notify our users that it worked
+                # messages.success(request, 'You have updated the appraisal.')
+            #
+            # except IntegrityError: #If the transaction failed
+            #     messages.error(request, 'There was an error saving your appraisal.')
+            #     return redirect(reverse('appraisal:appraisal_list'))
 
     else:
         appraisal_form = AppraisalForm()
