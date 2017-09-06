@@ -3,10 +3,13 @@
 {% block content %}
 
 <h3>{{ evaluation }}</h3>
-    <p>{{ evaluation.employee }} evaluated by {{ evaluation.superior }} on {{ evaluation.date }}<br>
+    <p>{{ evaluation.staff }} evaluated by {{ evaluation.superior }} on {{ evaluation.date }}<br>
         The score was {{ evaluation.total }}
     </p>
-{% if form %}
+    {% if last %}
+    <h3><a href="{% url 'evaluation:apraisal_create' staff_no=evaluation.staff %}">Appraise The Staff</a></h3>
+
+    {% if form %}
 <form action="" method="post">
 {% csrf_token %}
 <input value="{{ evaluation.pk }}" type="hidden" id="id_evaluation" name="evaluation" >
@@ -26,6 +29,8 @@
 
     <a href="{{ evaluation.get_absolute_url }}edit/">Make Changes</a>
 {% endif %}
+     {% endif %}
+
     <table border="1">
     <thead>
       <tr>
@@ -48,8 +53,8 @@
             <td colspan="2">
               TOTAL
             </td>
-          <td colspan="2">Your score is {{ score|mul:100 }}% the db say it is {{ evaluation.percentage }}% and total {{ evaluation.total }}
-          </td>
+          <td>{{ evaluation.percentage }}% </td>
+              <td> {{ evaluation.total }}</td>
           </tr>
         {% endif %}
       {% empty %}
@@ -62,6 +67,75 @@
 <br>
 <hr>
 
+    <div class="col-sm-6">
+    <canvas id="myChart" my_labels="{{ chart_labels }}" width="100" height="100"></canvas>
+    <br><br><hr><br><br>
+
+    </div>
+    <div class="col-sm-6">
+
+    <h3>Consequential Appraisals</h3>
+
+    <p>{{ jsor }}</p>
+    <p>{% for appraisal in appraisal_list %}
+        <b>{{ forloop.counter }}</b>: {{ appraisal.detail }} <br>
+    {% endfor %}
+
+    </p>
+    </div>
 <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
 <script src="{% static 'js/parsley.min.js' %}"></script>
 {% endblock content %}
+<script>
+
+{% block jquery %}
+
+var ctx = document.getElementById("myChart").getContext('2d');
+var labls = {{ chart_labels|safe }}
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labls,
+        datasets: [{
+            label: 'Question performance',
+            data: {{ chart_data }},
+            backgroundColor:
+            [
+                            'rgba(255, 99, 132, 0.8',
+                            'rgba(255, 206, 86, 0.8',
+                            'rgba(75, 192, 192, 0.8',
+                            'rgba(153, 102, 255, 0.8',
+                            'rgba(255, 159, 64, 0.8',
+                            'rgba(55, 99, 132, 0.8',
+                            'rgba(54, 12, 235, 0.8',
+                            'rgba(255, 206, 186, 0.8',
+                            'rgba(175, 192, 192, 0.8',
+                            'rgba(153, 202, 255, 0.8',
+                            'rgba(255, 159, 214, 0.8',
+                            'rgba(135, 99, 132, 0.8',
+                            'rgba(54, 100, 235, 0.8',
+                            'rgba(255, 206, 206, 0.8',
+                            'rgba(205, 192, 192, 0.8',
+                            'rgba(153, 2, 255, 0.8',
+                            'rgba(255, 159, 6, 0.8',
+                        ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        title: {
+            display: true,
+            text: 'Performance of {{ evaluation.staff }} per question'
+        },
+        cutoutPercentage: 10,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+{% endblock %}
+</script>

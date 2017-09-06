@@ -1,22 +1,12 @@
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.10/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '+1dx75zg6url%quwf_t$mtnepbl2+wthv*n$b2-=35$gse3k)a'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -26,15 +16,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'evaluation',
+    'kenindus.utils',
 
-    'django.contrib.sites',
-    'django.contrib.flatpages',
-    'froala_editor',
-    'django_markdown',
-    'ckeditor',
-    'ckeditor_uploader',
+    'rest_framework',
 ]
-SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -67,39 +52,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'kenindus.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-
-# Password validation
-# https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
-
-# AUTH_PASSWORD_VALIDATORS = [
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-#     },
-#     {
-#         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-#     },
-# ]
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.10/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -111,60 +69,40 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
-
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_URL = '/static/'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'live/static')
-
 MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'live/static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'live/media')
+# AfricasTalkingGatways
+ATG_USERNAME = "my_trial_app"
+ATG_API_KEY = "5a090d4a7da6b2e8567996684289a0dc2105a9dcda3d27c82478a59b86d7d6b4"
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'live/media/')
-# INSTALLED_APPS += ('froala_editor')
-CKEDITOR_UPLOAD_PATH = "uploads/"
-CKEDITOR_ALLOW_NONIMAGE_FILES = False
-
-
-CKEDITOR_CONFIGS = {
-    'awesome_ckeditor': {
-        'toolbar': 'Basic',
-    },
-    'default': {
-        'toolbar': (
-            ['div', 'Source', '-', 'Save', 'NewPage', 'Preview', '-', 'Templates'],
-            ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Print', 'SpellChecker', 'Scayt'],
-            ['Undo', 'Redo', '-', 'Find', 'Replace', '-', 'SelectAll', 'RemoveFormat'],
-            ['Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField'],
-            ['Bold', 'Italic', 'Underline', 'Strike', '-', 'Subscript', 'Superscript'],
-            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', 'Blockquote'],
-            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Link', 'Unlink', 'Anchor'],
-            ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak'],
-            ['Styles', 'Format', 'Font', 'FontSize'],
-            ['TextColor', 'BGColor'],
-            ['Maximize', 'ShowBlocks', '-', 'About', 'pbckcode'],
-        ),
-    },
-}
-
-
-# CKEDITOR_UPLOAD_SLUGIFY_FILENAME = False
-# CKEDITOR_JQUERY_URL = 'http://libs.baidu.com/jquery/2.0.3/jquery.min.js'
-# CKEDITOR_IMAGE_BACKEND = "pillow"
-
-
-
-
-
-
-
-
-
-
-
-
+# __DEFAULT_KENINDUS_ADMIN_NAME = "Kenindus Admin"
+# __DEFAULT_KENINDUS_ADMIN_EMAIL = "admin@asks.me"
+# __DEFAULT_FROM_EMAIL = 'noreply@kenindus.com'
+# ADMIN_NAME = __DEFAULT_KENINDUS_ADMIN_NAME
+# ADMIN_EMAIL = __DEFAULT_KENINDUS_ADMIN_EMAIL
+# ADMIN_LOCATION = "Eldoret, KENYA"
+# ADMINS = (
+#     (ADMIN_NAME, ADMIN_EMAIL),
+# )
+# SERVER_EMAIL = DEFAULT_FROM_EMAIL = __DEFAULT_FROM_EMAIL
+# EMAIL_REPLY_PATTERN = "reply+%s+code@keninduss.io"
+# EMAIL_FROM_PATTERN = u'''"%s on Kenindus" <%s>'''
+# EMAIL_REPLY_SECRET_KEY = "abc"
+# EMAIL_REPLY_SUBJECT = u"[kenindus] %s"
+# EMAIL_REPLY_REMOVE_QUOTED_TEXT = True
+# ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'deisaack@gmail.com'
+EMAIL_HOST_PASSWORD = 'Jacktone1'
+# SECURE_SSL_REDIRECT = True
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+# KENINDUS_ADMIN_EMAIL = "admin@me.com"
+EMAIL_USE_TLS = True
 
 
 
