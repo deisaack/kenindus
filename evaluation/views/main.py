@@ -165,6 +165,7 @@ class EvaluationDetilView(DetailView):
         pk = p.first().id
         context['appraisal_list'] = Appraisal.objects.all().filter(evaluation=pk)
         context['question_list'] = Question.objects.filter(evaluation=pk)
+        context['file_list'] = File.objects.all().filter(evaluation=pk)
         if context['question_list']:
             data = []
             labels = []

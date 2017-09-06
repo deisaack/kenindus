@@ -14,6 +14,7 @@ urlpatterns = [
 	url(r'^staff/$', views.StaffListView.as_view(), name='staff_list'),
 	url(r'^staff/S-(?P<staff_no>[\w\-]+)/$', views.StaffDetailView.as_view(), name='staff_detail'),
 	url(r'^staff/S-(?P<staff_no>[\w\-]+)/appraise/$', views.ApraisalCreateView.as_view(), name='apraisal_create'),
+	url(r'^staff/S-(?P<staff_no>[\w\-]+)/file/$', views.ApraisalFileView.as_view(), name='apraisal_file'),
 	url(r'^make/$', views.evaluation_creating, name='evaluation_create'),
 	url(r'^question/q=(?P<slug>[\w\-]+)/$', views.QuestionDetilView.as_view(), name='question_detail'),
 	url(r'^question/q?=(?P<slug>[\w\-]+)/update/$', views.QuestionUpdateView.as_view(), name='question_update'),

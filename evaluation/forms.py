@@ -13,7 +13,7 @@ class FileForm(forms.ModelForm):
     file = forms.FileField(help_text='You May atach a file', validators=[validate_file], required=False)
     class Meta:
         model = File
-        fields = ('file',)
+        fields = ('file', 'evaluation', 'superior')
 
 class AppraisalForm(forms.ModelForm):
     increase = forms.DecimalField(max_value=1000000, min_value=0.00, required=False, label='Salary To Increase')

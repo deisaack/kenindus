@@ -92,18 +92,23 @@ def update_filename(instance, filename):
     return os.path.join(path, format)
 
 def upload_location(instance, filename):
-    path = "upload/appraisals/"
+    path = "upload/appraisals/files/"
     format = str(instance.evaluation_id) + instance.superior.username[:10] + '.pdf'
     return os.path.join(path, format)
 
 class File(models.Model):
 	evaluation = models.ForeignKey(Evaluation, null=True, blank=True)
-	file = models.FileField('Atach a File', upload_to='files')
+	file = models.FileField('Atach a File', upload_to=upload_location)
 	superior = models.ForeignKey(User, on_delete=models.PROTECT, null=True, blank=True)
 	date = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
-		return str(self.file.url)
+		try:
+			info = str(self.file).strip().split('/').pop()
+
+			return info
+		except:
+			return str(self.file.url)
 
 admin.site.register(File)
 

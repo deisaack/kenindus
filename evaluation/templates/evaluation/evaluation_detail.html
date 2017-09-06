@@ -82,6 +82,14 @@
     {% endfor %}
 
     </p>
+    {% if file_list %}
+        <h3>Atached Files:</h3>
+        <p>
+        {% for file in file_list %}
+            {{ forloop.counter }}: <a href="{{ file.file.url }}">{{ file }}</a> <br />
+        {% endfor %}
+        </p>
+    {% endif %}
     </div>
 <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
 <script src="{% static 'js/parsley.min.js' %}"></script>

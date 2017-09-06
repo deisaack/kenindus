@@ -13,13 +13,14 @@
                   {{ form.media }}
               {{ form.as_p }}
         <div id="uploadBtn"></div>
+        {{ staff.staff_no }}
         <div style="margin-bottom: 20px;">
     <button type="button" class="btn btn-primary js-upload-files">
       <span class="glyphicon glyphicon-cloud-upload"></span> Upload files
     </button>
     <input id="fileupload" type="file" name="file" multiple
            style="display: none;"
-           data-url="{% url 'evaluation:progress_bar_upload' %}"
+           data-url="{% url 'evaluation:apraisal_file' staff_no=staff.staff_no %}"
            data-form-data='{"csrfmiddlewaretoken": "{{ csrf_token }}"}'>
   </div>
             <button style="margin-left: 150px;" type="submit" class="btn btn-warning">Submit</button>
